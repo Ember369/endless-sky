@@ -23,6 +23,7 @@ this program. If not, see <https://www.gnu.org/licenses/>.
 #include "DataNode.h"
 #include "Files.h"
 #include "text/Font.h"
+#include "text/FontSet.h"
 #include "FrameTimer.h"
 #include "GameData.h"
 #include "GameLoadingPanel.h"
@@ -252,6 +253,7 @@ void GameLoop(PlayerInfo &player, const Conversation &conversation, const string
 	FrameTimer timer(frameRate);
 	bool isPaused = false;
 	bool isFastForward = false;
+	int variableTimeScale = 3;
 	int testDebugUIDelay = UI_DELAY;
 
 	// If fast forwarding, keep track of whether the current frame should be drawn.
@@ -319,6 +321,18 @@ void GameLoop(PlayerInfo &player, const Conversation &conversation, const string
 					&& (Command(event.key.keysym.sym).Has(Command::FASTFORWARD)))
 			{
 				isFastForward = !isFastForward;
+			}
+			else if(event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_COMMA
+					&& isFastForward)
+			{
+				if (variableTimeScale > 1)
+					variableTimeScale--;
+			}
+			else if(event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_PERIOD
+					&& isFastForward)
+			{
+				if (variableTimeScale < 90)
+					variableTimeScale++;
 			}
 		}
 		SDL_Keymod mod = SDL_GetModState();
@@ -397,7 +411,7 @@ void GameLoop(PlayerInfo &player, const Conversation &conversation, const string
 
 			if(isFastForward && inFlight)
 			{
-				skipFrame = (skipFrame + 1) % 3;
+				skipFrame = (skipFrame + 1) % (1 * variableTimeScale);
 				if(skipFrame)
 					continue;
 			}
@@ -409,8 +423,14 @@ void GameLoop(PlayerInfo &player, const Conversation &conversation, const string
 		// we should draw the game panels instead:
 		(menuPanels.IsEmpty() ? gamePanels : menuPanels).DrawAll();
 		if(isFastForward)
+		{
 			SpriteShader::Draw(SpriteSet::Get("ui/fast forward"), Screen::TopLeft() + Point(10., 10.));
 
+			const Font &font = FontSet::Get(14);
+			const Color &unselectedColor = *GameData::Colors().Get("dim");
+			string timeScale = to_string(variableTimeScale);
+			font.Draw(timeScale, Screen::TopLeft() + Point(10., 10.), unselectedColor);
+		}
 		GameWindow::Step();
 
 		// When we perform automated testing, then we run the game by default as quickly as possible.
