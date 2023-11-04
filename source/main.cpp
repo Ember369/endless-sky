@@ -325,13 +325,13 @@ void GameLoop(PlayerInfo &player, const Conversation &conversation, const string
 			else if(event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_COMMA
 					&& isFastForward)
 			{
-				if (variableTimeScale > 1)
+				if (variableTimeScale > 3)
 					variableTimeScale--;
 			}
 			else if(event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_PERIOD
 					&& isFastForward)
 			{
-				if (variableTimeScale < 90)
+				if (variableTimeScale < 8)
 					variableTimeScale++;
 			}
 		}
@@ -425,11 +425,22 @@ void GameLoop(PlayerInfo &player, const Conversation &conversation, const string
 		if(isFastForward)
 		{
 			SpriteShader::Draw(SpriteSet::Get("ui/fast forward"), Screen::TopLeft() + Point(10., 10.));
-
-			const Font &font = FontSet::Get(14);
-			const Color &unselectedColor = *GameData::Colors().Get("dim");
-			string timeScale = to_string(variableTimeScale);
-			font.Draw(timeScale, Screen::TopLeft() + Point(10., 10.), unselectedColor);
+			if (variableTimeScale > 3)
+				SpriteShader::Draw(SpriteSet::Get("ui/fast forward"), Screen::TopLeft() + Point(15., 10.));
+			if (variableTimeScale > 4)
+				SpriteShader::Draw(SpriteSet::Get("ui/fast forward"), Screen::TopLeft() + Point(20., 10.));
+			if (variableTimeScale > 5)
+				SpriteShader::Draw(SpriteSet::Get("ui/fast forward"), Screen::TopLeft() + Point(25., 10.));
+			if (variableTimeScale > 6)
+				SpriteShader::Draw(SpriteSet::Get("ui/fast forward"), Screen::TopLeft() + Point(30., 10.));
+			if (variableTimeScale > 7)
+				SpriteShader::Draw(SpriteSet::Get("ui/fast forward"), Screen::TopLeft() + Point(30., 10.));
+			if (variableTimeScale > 8)
+				SpriteShader::Draw(SpriteSet::Get("ui/fast forward"), Screen::TopLeft() + Point(30., 10.));
+			// const Font &font = FontSet::Get(14);
+			// const Color &unselectedColor = *GameData::Colors().Get("dim");
+			// string timeScale = to_string(variableTimeScale);
+			// font.Draw(timeScale, Screen::TopLeft() + Point(10., 10.), unselectedColor);
 		}
 		GameWindow::Step();
 
