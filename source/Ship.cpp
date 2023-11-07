@@ -3610,6 +3610,17 @@ void Ship::DoGeneration()
 		const double hullHeat = (attributes.Get("hull heat")
 			* (1. + attributes.Get("hull heat multiplier"))) / hullAvailable;
 		double hullRemaining = hullAvailable;
+
+		const double bayHullAvailable = attributes.Get("bay hull repair rate")
+			* (1. + attributes.Get("bay hull repair multiplier"));
+		const double bayHullEnergy = (attributes.Get("bay hull energy")
+			* (1. + attributes.Get("bay hull energy multiplier"))) / bayHullAvailable;
+		const double bayHullFuel = (attributes.Get("bay hull fuel")
+			* (1. + attributes.Get("bay hull fuel multiplier"))) / bayHullAvailable;
+		const double bayHullHeat = (attributes.Get("bay hull heat")
+			* (1. + attributes.Get("bay hull heat multiplier"))) / bayHullAvailable;
+		double bayHullRemaining = bayHullAvailable + hullRemaining;
+
 		if(!hullDelay)
 			DoRepair(hull, hullRemaining, MaxHull(),
 				energy, hullEnergy, fuel, hullFuel, heat, hullHeat);
@@ -3623,6 +3634,17 @@ void Ship::DoGeneration()
 		const double shieldsHeat = (attributes.Get("shield heat")
 			* (1. + attributes.Get("shield heat multiplier"))) / shieldsAvailable;
 		double shieldsRemaining = shieldsAvailable;
+
+		const double bayShieldsAvailable = attributes.Get("bay shield generation")
+			* (1. + attributes.Get("bay shield generation multiplier"));
+		const double bayShieldsEnergy = (attributes.Get("bay shield energy")
+			* (1. + attributes.Get("bay shield energy multiplier"))) / bayShieldsAvailable;
+		const double bayShieldsFuel = (attributes.Get("bay shield fuel")
+			* (1. + attributes.Get("bay shield fuel multiplier"))) / bayShieldsAvailable;
+		const double bayShieldsHeat = (attributes.Get("bay shield heat")
+			* (1. + attributes.Get("bay shield heat multiplier"))) / bayShieldsAvailable;
+		double bayShieldsRemaining = bayShieldsAvailable + shieldsRemaining;
+
 		if(!shieldDelay)
 			DoRepair(shields, shieldsRemaining, MaxShields(),
 				energy, shieldsEnergy, fuel, shieldsFuel, heat, shieldsHeat);
@@ -3649,10 +3671,10 @@ void Ship::DoGeneration()
 			{
 				Ship &ship = *it.second;
 				if(!hullDelay)
-					DoRepair(ship.hull, hullRemaining, ship.MaxHull(),
+					DoRepair(ship.hull, bayHullRemaining, ship.MaxHull(),
 						energy, hullEnergy, heat, hullHeat, fuel, hullFuel);
 				if(!shieldDelay)
-					DoRepair(ship.shields, shieldsRemaining, ship.MaxShields(),
+					DoRepair(ship.shields, bayShieldsRemaining, ship.MaxShields(),
 						energy, shieldsEnergy, heat, shieldsHeat, fuel, shieldsFuel);
 			}
 
