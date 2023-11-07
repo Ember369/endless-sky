@@ -3672,10 +3672,10 @@ void Ship::DoGeneration()
 				Ship &ship = *it.second;
 				if(!hullDelay)
 					DoRepair(ship.hull, bayHullRemaining, ship.MaxHull(),
-						energy, hullEnergy, heat, hullHeat, fuel, hullFuel);
+						energy, bayHullEnergy, heat, bayHullHeat, fuel, bayHullFuel);
 				if(!shieldDelay)
 					DoRepair(ship.shields, bayShieldsRemaining, ship.MaxShields(),
-						energy, shieldsEnergy, heat, shieldsHeat, fuel, shieldsFuel);
+						energy, bayShieldsEnergy, heat, bayShieldsHeat, fuel, bayShieldsFuel);
 			}
 
 			// Now that there is no more need to use energy for hull and shield
